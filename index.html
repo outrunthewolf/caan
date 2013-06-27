@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+	<div id="container">
+
+		<!-- Online Status -->
+		<div class="holder">
+			<span>Websocket Status</span>
+			<div id="status"></div>
+		</div>
+
+		<!-- Online Count -->
+		<div class="holder">
+			<span>Clients Online</span>
+			<div id="online_count"></div>
+		</div>
+
+		<div class="holder">
+			<div class="fl">
+				<span>Client List</span>
+				<ul id="connected_clients">
+				</ul>
+			</div>
+
+			<div class="fr">
+				<span>Node</span>
+				<div id="node"></div>
+			</div>
+			<div class="cl"></div>
+		</div>
+
+	</div>
+
+
+
+	<script>
+		var status = document.getElementById("status");
+		var count = document.getElementById("online_count");
+		var clients = document.getElementById("connected_clients");
+		var node = document.getElementById("node");
+		var socket = io.connect('http://localhost:3000');
+
+		// let the app know we're connected
+		socket.on('connect', function() 
+		{
+			console.log('connected');
+			status.innerHTML = 'Socket Ready';
+		});
+
+		// count online users
+		socket.on('online_count', function(data)
+		{
+			// Count whos online
+			count.innerHTML = data.amount;
+
+			// list clients
+			clients.innerHTML = "";
+			for(var i = 0; i < data.who.length; ++i)
+			{
+				var li = document.createElement("li");
+				clients.appendChild(li);
+				li.innerHTML = data.who[i];
+			}
+
+			// show the node
+			node.innerHTML = data.node;
+		});
+
+	</script>
+
+	<style type="text/css">
+		#container {
+			margin-left:auto;
+			margin-right:auto;
+			width:800px;
+		}
+
+		.holder {
+			border: solid 1px #333;
+			padding: 20px;
+			margin-bottom: 5px;
+			background: #dedede;
+		}
+
+		#online_count {
+
+		}
+
+		#connected_clients {
+
+		}
+
+		#connected_clients li {
+
+		}
+
+		.fl {
+			float: left;
+			width: 300px;
+		}
+		.fr {
+			float: right;
+			width: 300px;
+		}
+		.cl {
+			clear: both;
+		}
+
+	</style>
+
+</body>
+</html>
